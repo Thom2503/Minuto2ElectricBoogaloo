@@ -4,6 +4,11 @@ internal class Client
 {
     // do you need to add variables here?
     // add the variables you need for concurrency here
+    private Thread thread;
+    public Thread Thread {
+        get => thread;
+        set => thread = value;
+    }
 
     // do not add more variables after this comment.
     private readonly int id = 0;
@@ -26,14 +31,17 @@ internal class Client
         // for each request of the client the cooks will prepare the order
 
         Console.WriteLine("C: Order placed by {0}", id); // do not remove this line
+        Program.cook_sem.Release();
 
         //wait for the order to be ready (the cook is slow, so go take a nap)
         Thread.Sleep(new Random().Next(100, 500));  // do not remove this line
         // each client will go to the pick the oder when ready in the pickup location
         // each client will pickup the order and terminate
-
-        Program.pickups.RemoveFirst(); // do not remove this line
-        //order pickedup
+        Program.client_sem.WaitOne();
+        lock(Program.mutex) {
+            Program.pickups.RemoveFirst(); // do not remove this line
+            //order pickedup
+        }
 
         Console.WriteLine("C: Order pickedup by {0}", id); // do not remove this line
     }

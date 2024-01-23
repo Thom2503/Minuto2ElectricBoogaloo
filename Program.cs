@@ -1,17 +1,22 @@
 ﻿
 using System.Data;
+using System.Runtime.ExceptionServices;
+using System.Runtime.Versioning;
 
 namespace readytogo;
 class Program
 {
     // you MUST fill in your anme(s) and student number(s) here
-    private static readonly string studentname1 = "";
-    private static readonly string studentnum1 = "";
-    private static readonly string studentname2 = "";
-    private static readonly string studentnum2 = "";
+    private static readonly string studentname1 = "Thom Veldhuis";
+    private static readonly string studentnum1 = "1055805";
+    private static readonly string studentname2 = "Maruf Rodjan";
+    private static readonly string studentnum2 = "1052505";
 
     // variables for concurrency?
     // add the variables you need for concurrency here in case of need
+    public static Semaphore cook_sem = new Semaphore(0, 500);
+    public static Semaphore client_sem = new Semaphore(0, 1);
+    public static readonly Mutex mutex = new Mutex();
 
 
     // do not add more variables after this comment.
@@ -41,7 +46,13 @@ class Program
         // DO NOT CHANGE THE CODE ABOVE
         // use the space below to add your code if needed
 
+        foreach(var _k in cooks) {
+            _k.Thread.Join();
+        }
 
+        foreach(var _c in clients) {
+            _c.Thread.Join();
+        }
 
         // DO NOT CHANGE THE CODE BELOW
         // print the number of orders placed and the number of orders consumed left in the lists
@@ -58,7 +69,7 @@ class Program
     {   // feel free to change the code in this method if needed
         for (int i = 0; i < cooks.Length; i++)
         {
-            cooks[i].DoWork();
+            cooks[i].Thread.Start();
         }
     }
 
@@ -66,15 +77,16 @@ class Program
     {   // feel free to change the code in this method if needed
         for (int i = 0; i < clients.Length; i++)
         {
-            clients[i].DoWork();
+            clients[i].Thread.Start();
         }
     }
 
     private static void CreateCooks()
     {   // feel free to change the code in this method if needed but not the signature
-        for (int i = 0; i < total_clients; i++)
+        for (int i = 0; i < total_coocks; i++)
         {
             cooks[i] = new Cook(i); // Properly initialize Cook instance with required arguments
+            cooks[i].Thread = new Thread(cooks[i].DoWork);
         }
     }
 
@@ -83,6 +95,7 @@ class Program
         for (int i = 0; i < total_clients; i++)
         {
             clients[i] = new Client(i); // Properly initialize Client instance with required arguments
+            clients[i].Thread = new Thread(clients[i].DoWork);
         }
     }
 }
