@@ -28,23 +28,18 @@ internal class Cook
             o = Program.orders.First();     // do not remove this line
             Program.orders.RemoveFirst();   // do not remove this line
         }
-        
-            Console.WriteLine("K: Order taken by {0}, now preparing", id);  // do not remove this line
-        
-            Thread.Sleep(new Random().Next(100, 500)); // do not remove this line
-            // preparing an order takes time
-
-            // when the order is ready, it is placed in the pickup location by the cook that made it.
-
-            o.Done(); // the order is now ready
-            Console.WriteLine("K: Order is: {0}", o.isReady()); // do not remove this line
+        Console.WriteLine("K: Order taken by {0}, now preparing", id);  // do not remove this line
+        Thread.Sleep(new Random().Next(100, 500)); // do not remove this line
+        // preparing an order takes time
+        // when the order is ready, it is placed in the pickup location by the cook that made it.
+        o.Done(); // the order is now ready
+        Console.WriteLine("K: Order is: {0}", o.isReady()); // do not remove this line
         lock(Program.pickupMutex) {
             Program.pickups.AddFirst(o);                        // do not remove this line
             // now the client can pickup the order
         }
-
-            Console.WriteLine("K: Order ready");                // do not remove this line
-            // each cook will terminate after preparing one order
-            Program.client_sem.Release();
+        Console.WriteLine("K: Order ready");                // do not remove this line
+        // each cook will terminate after preparing one order
+        Program.client_sem.Release();
     }
 }

@@ -29,10 +29,9 @@ internal class Client
             //place the order
             Program.orders.AddFirst(o);  // do not remove this line
         }
-            // for each request of the client the cooks will prepare the order
-            Console.WriteLine("C: Order placed by {0}", id); // do not remove this line
-            Program.cook_sem.Release();
-
+        // for each request of the client the cooks will prepare the order
+        Console.WriteLine("C: Order placed by {0}", id); // do not remove this line
+        Program.cook_sem.Release();
         //wait for the order to be ready (the cook is slow, so go take a nap)
         Thread.Sleep(new Random().Next(100, 500));  // do not remove this line
         // each client will go to the pick the oder when ready in the pickup location
