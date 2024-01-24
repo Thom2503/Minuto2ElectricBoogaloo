@@ -47,10 +47,11 @@ class Program
         // DO NOT CHANGE THE CODE ABOVE
         // use the space below to add your code if needed
 
+        // join de threads anders zijn we hier tot de zon ontploft aan het wachten
         foreach(var _k in cooks) {
             _k.Thread?.Join();
         }
-
+        // ditto
         foreach(var _c in clients) {
             _c.Thread?.Join();
         }
