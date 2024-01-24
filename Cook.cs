@@ -4,8 +4,8 @@ internal class Cook
 {
     // do you need to add variables here?
     // add the variables you need for concurrency here
-    private Thread thread;
-    public Thread Thread {
+    private Thread? thread;
+    public Thread? Thread {
         get => thread;
         set => thread = value;
     }
@@ -23,10 +23,11 @@ internal class Cook
     {
         Order? o = null;
         Program.cook_sem.WaitOne();
-        lock(Program.mutex) {
+        lock(Program.orderMutex) {
             // each cook will ONLY get a dish from ONE order and prepare it
             o = Program.orders.First();     // do not remove this line
             Program.orders.RemoveFirst();   // do not remove this line
+        }
         
             Console.WriteLine("K: Order taken by {0}, now preparing", id);  // do not remove this line
         
@@ -37,15 +38,13 @@ internal class Cook
 
             o.Done(); // the order is now ready
             Console.WriteLine("K: Order is: {0}", o.isReady()); // do not remove this line
-        }
-        
-        lock(Program.mutex) {
+        lock(Program.pickupMutex) {
             Program.pickups.AddFirst(o);                        // do not remove this line
             // now the client can pickup the order
+        }
 
             Console.WriteLine("K: Order ready");                // do not remove this line
             // each cook will terminate after preparing one order
-        }
-        Program.client_sem.Release();
+            Program.client_sem.Release();
     }
 }
