@@ -14,14 +14,16 @@ class Program
 
     // do not add more variables after this comment.
     // feel free to change the values of the variables below to test your code
-    private static readonly int total_clients = 100; // this needs to be the same as the number of cooks
-    private static int total_coocks = 100; // this needs to be the same as the number of clients
+    private static readonly int total_clients = 500; // this needs to be the same as the number of cooks
+    private static int total_coocks = 500; // this needs to be the same as the number of clients
 
     // variables for concurrency?
     // add the variables you need for concurrency here in case of need
     public static Semaphore cook_sem = new Semaphore(0, total_coocks);
     public static Semaphore client_sem = new Semaphore(0, total_clients);
-    public static readonly Mutex mutex = new Mutex();
+    // twee mutexes voor de orders en pickup omdat het 2 verschillende acties zijn voor de threads
+    public static readonly Mutex orderMutex = new Mutex();
+    public static readonly Mutex pickupMutex = new Mutex();
 
     // do not change the code below
     public static LinkedList<Order> orders = new();
@@ -45,12 +47,13 @@ class Program
         // DO NOT CHANGE THE CODE ABOVE
         // use the space below to add your code if needed
 
+        // join de threads anders zijn we hier tot de zon ontploft aan het wachten
         foreach(var _k in cooks) {
-            _k.Thread.Join();
+            _k.Thread?.Join();
         }
-
+        // ditto
         foreach(var _c in clients) {
-            _c.Thread.Join();
+            _c.Thread?.Join();
         }
 
         // DO NOT CHANGE THE CODE BELOW
@@ -68,7 +71,7 @@ class Program
     {   // feel free to change the code in this method if needed
         for (int i = 0; i < cooks.Length; i++)
         {
-            cooks[i].Thread.Start();
+            cooks[i].Thread?.Start();
         }
     }
 
@@ -76,7 +79,7 @@ class Program
     {   // feel free to change the code in this method if needed
         for (int i = 0; i < clients.Length; i++)
         {
-            clients[i].Thread.Start();
+            clients[i].Thread?.Start();
         }
     }
 
