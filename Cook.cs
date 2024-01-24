@@ -38,7 +38,6 @@ internal class Cook
             o.Done(); // the order is now ready
             Console.WriteLine("K: Order is: {0}", o.isReady()); // do not remove this line
         }
-        Program.cook_sem.WaitOne();
         
         lock(Program.mutex) {
             Program.pickups.AddFirst(o);                        // do not remove this line

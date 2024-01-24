@@ -12,17 +12,16 @@ class Program
     private static readonly string studentname2 = "Maruf Rodjan";
     private static readonly string studentnum2 = "1052505";
 
-    // variables for concurrency?
-    // add the variables you need for concurrency here in case of need
-    public static Semaphore cook_sem = new Semaphore(0, 500);
-    public static Semaphore client_sem = new Semaphore(0, 1);
-    public static readonly Mutex mutex = new Mutex();
-
-
     // do not add more variables after this comment.
     // feel free to change the values of the variables below to test your code
-    private static readonly int total_clients = 500; // this needs to be the same as the number of cooks
-    private static int total_coocks = 500; // this needs to be the same as the number of clients
+    private static readonly int total_clients = 100; // this needs to be the same as the number of cooks
+    private static int total_coocks = 100; // this needs to be the same as the number of clients
+
+    // variables for concurrency?
+    // add the variables you need for concurrency here in case of need
+    public static Semaphore cook_sem = new Semaphore(0, total_coocks);
+    public static Semaphore client_sem = new Semaphore(0, total_clients);
+    public static readonly Mutex mutex = new Mutex();
 
     // do not change the code below
     public static LinkedList<Order> orders = new();
